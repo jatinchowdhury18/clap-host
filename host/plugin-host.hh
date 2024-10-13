@@ -150,6 +150,11 @@ protected:
    bool implementsThreadPool() const noexcept override { return true; }
    bool threadPoolRequestExec(uint32_t numTasks) noexcept override;
 
+   // clap_host_scratch_memory
+   bool implementsScratchMemory() const noexcept override { return true; }
+   bool scratchMemoryRequestSize(size_t bytesRequested) noexcept override;
+   void *scratchMemoryAccess() noexcept override;
+
 private:
    /* clap host callbacks */
    void scanParams();
@@ -204,6 +209,10 @@ private:
    std::atomic<int> _threadPoolTaskIndex = {0};
    QSemaphore _threadPoolSemaphoreProd;
    QSemaphore _threadPoolSemaphoreDone;
+
+   /* scratch memory */
+   static constexpr size_t MAX_SCRATCH_MEMORY_BYTES = 1 << 14;
+   std::vector<std::byte> _scratchMemoryPool {};
 
    /* process stuff */
    clap_audio_buffer _audioIn = {};

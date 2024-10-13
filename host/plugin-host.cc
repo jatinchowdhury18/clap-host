@@ -412,6 +412,22 @@ bool PluginHost::threadPoolRequestExec(uint32_t num_tasks) noexcept {
    return true;
 }
 
+bool PluginHost::scratchMemoryRequestSize(size_t bytesRequested) noexcept {
+   if (bytesRequested > MAX_SCRATCH_MEMORY_BYTES) {
+      return false;
+   }
+
+   _scratchMemoryPool.resize(bytesRequested);
+   return true;
+}
+
+void *PluginHost::scratchMemoryAccess() noexcept {
+   if (_scratchMemoryPool.empty()) {
+      return nullptr;
+   }
+   return _scratchMemoryPool.data();
+}
+
 bool PluginHost::timerSupportRegisterTimer(uint32_t period_ms, clap_id *timer_id) noexcept {
    checkForMainThread();
 
